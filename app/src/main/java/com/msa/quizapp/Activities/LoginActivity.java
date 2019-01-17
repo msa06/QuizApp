@@ -52,8 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     private SignInButton signInButton;
     private final static int RC_SIGN_IN = 2;
     private final static String TAG = "LOGIN ACTIVITY";
-    Button email_register;
-    FloatingActionButton email_signin;
+    private TextView email_register;
+    Button email_signin;
     EditText email, password;
 
     @Override
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
         mUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        email_register = findViewById(R.id.loginOrRegisterButton);
+        email_register = (TextView) findViewById(R.id.registertext);
         email_register.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
         email = findViewById(R.id.loginEmail);
         password = findViewById(R.id.loginPassword);
-        email_signin = findViewById(R.id.floatingActionButton);
+        email_signin = (Button) findViewById(R.id.login_btn);
 
         email_signin.setOnClickListener(new View.OnClickListener() {
                                             @Override

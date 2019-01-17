@@ -10,6 +10,8 @@
     <color name="red">#f44336</color>
     <color name="grey">#373737</color>
     <color name="textColor">#252525</color>
+    <color name="purple">#aa55ff</color>
+    <color name="blue">#584bdd</color>
 
     <color name="colorWhite">#fff</color>
     <color name="colorOffWhite">#80ffffff</color>
