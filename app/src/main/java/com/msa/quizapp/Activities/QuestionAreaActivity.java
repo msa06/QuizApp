@@ -1,35 +1,27 @@
 package com.msa.quizapp.Activities;
 
-import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
-import android.os.Build;
-import android.os.CountDownTimer;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.msa.quizapp.Model.Question;
 import com.msa.quizapp.Model.Quiz;
 import com.msa.quizapp.R;
-import com.msa.quizapp.Utils.QuestionLoader;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Timer;
 
-public class QuestionAreaActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Question>> {
+public class QuestionAreaActivity extends AppCompatActivity {
 
     //Variable Declaration
     private CountDownTimer countDownTimer;
@@ -131,14 +123,7 @@ public class QuestionAreaActivity extends AppCompatActivity implements LoaderMan
             }
         });
 
-        // Start the AsyncTask to fetch the earthquake data
-        // Get a reference to the LoaderManager, in order to interact with loaders.
-        LoaderManager loaderManager = getLoaderManager();
 
-        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-        // because this activity implements the LoaderCallbacks interface).
-        loaderManager.initLoader(QUESTION_LOADER_ID, null, this);
 
     }
 
@@ -255,28 +240,4 @@ public class QuestionAreaActivity extends AppCompatActivity implements LoaderMan
 
     }
 
-
-
-    @Override
-    public Loader<List<Question>> onCreateLoader(int id, Bundle args) {
-        return new QuestionLoader(this, QUIZ_URL);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Question>> loader, List<Question> data) {
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_indicator);
-        progressBar.setVisibility(View.GONE);
-        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
-        // data set. This will trigger the ListView to update.
-
-        if (data != null && !data.isEmpty()) {
-            questionList = data;
-        }
-        updateQuestion(0);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Question>> loader) {
-            questionList.clear();
-    }
 }
