@@ -2,9 +2,6 @@ package com.msa.quizapp.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,13 +26,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.msa.quizapp.Model.Quiz;
 import com.msa.quizapp.Model.User;
 import com.msa.quizapp.R;
 
@@ -69,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         mUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
 
         email_register = (TextView) findViewById(R.id.registertext);
-        email_register.setOnClickListener(new View.OnClickListener(){
+        email_register.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -83,47 +77,47 @@ public class LoginActivity extends AppCompatActivity {
         email_signin = (Button) findViewById(R.id.login_btn);
 
         email_signin.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                String emailString = email.getText().toString();
-                                                final String passwordString = password.getText().toString();
+            @Override
+            public void onClick(View v) {
+                String emailString = email.getText().toString();
+                final String passwordString = password.getText().toString();
 
-                                                if (TextUtils.isEmpty(emailString)) {
-                                                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
-                                                    return;
-                                                }
+                if (TextUtils.isEmpty(emailString)) {
+                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                                                if (TextUtils.isEmpty(passwordString)) {
-                                                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
-                                                    return;
-                                                }
+                if (TextUtils.isEmpty(passwordString)) {
+                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
 
-                                                //authenticate user
-                                                mAuth.signInWithEmailAndPassword(emailString, passwordString)
-                                                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                                                // If sign in fails, display a message to the user. If sign in succeeds
-                                                                // the auth state listener will be notified and logic to handle the
-                                                                // signed in user can be handled in the listener.
-                                                                //progressBar.setVisibility(View.GONE);
-                                                                if (!task.isSuccessful()) {
-                                                                    // there was an error
-                                                                    if (password.length() < 6) {
-                                                                        password.setError(getString(R.string.minimum_password));
-                                                                    } else {
-                                                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                                                                    }
-                                                                } else {
-                                                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                                                    startActivity(intent);
-                                                                    finish();
-                                                                }
-                                                            }
-                                                        });
-                                            }
-                                        });
+                //authenticate user
+                mAuth.signInWithEmailAndPassword(emailString, passwordString)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                //progressBar.setVisibility(View.GONE);
+                                if (!task.isSuccessful()) {
+                                    // there was an error
+                                    if (password.length() < 6) {
+                                        password.setError(getString(R.string.minimum_password));
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                        });
+            }
+        });
 
 
         //Setting Signin Button
@@ -213,11 +207,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-       FirebaseUser mUser = mAuth.getCurrentUser();
-       if(mUser!=null){
-           updateUI();
-           attachDatabaseReadListner();
-       }
+        attachDatabaseReadListner();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            updateUI();
+
+        }
     }
 
     private void attachDatabaseReadListner() {
@@ -238,13 +233,15 @@ public class LoginActivity extends AppCompatActivity {
             mUserDatabaseReference.addValueEventListener(mValueEventListner);
         }
     }
+
     private void detachedDatabaseReadListner() {
-        if (mValueEventListner!=null){
+        if (mValueEventListner != null) {
             mUserDatabaseReference.removeEventListener(mValueEventListner);
-            mValueEventListner=null;
+            mValueEventListner = null;
         }
 
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthListner;
     private CircularImageView mUserImage;
-
+    private Button playbtn;
+    private TextView gameplayed;
 
     @Override
     protected void onStart() {
@@ -36,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
 
         mUserImage = (CircularImageView) findViewById(R.id.user_image);
-
+        playbtn = (Button) findViewById(R.id.play_btn);
+        gameplayed = (TextView) findViewById(R.id.game_playeed_text);
         mUserImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,6 +59,20 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        playbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        gameplayed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,ResultActivity.class));
+                finish();
+            }
+        });
 
     }
 
