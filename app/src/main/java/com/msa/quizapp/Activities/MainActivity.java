@@ -10,8 +10,17 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.msa.quizapp.Model.Quiz;
+import com.msa.quizapp.Model.QuizStatus;
 import com.msa.quizapp.R;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListner;
     private CircularImageView mUserImage;
     private Button playbtn;
-    private TextView gameplayed;
+    private TextView gameplayed,quiz_name,quiz_time,quiz_price;
+    private DatabaseReference mQuizStatusReference;
+    private DatabaseReference mQuizReference;
+    private DatabaseReference mQuestionsReference;
+    private String liveStatus, showQuestion;
+    private String currentQuesno = "1";
+    private ValueEventListener mQuizStatusListner;
+    private ValueEventListener mQuizListener;
+    private ValueEventListener mQuestionListner;
 
     @Override
     protected void onStart() {
@@ -33,14 +50,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Intialise UI
+        initUI();
 
-        //Firebase Reference
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
+        //Setting the Lisnter
+        attachOnClickListners();
 
-        mUserImage = (CircularImageView) findViewById(R.id.user_image);
-        playbtn = (Button) findViewById(R.id.play_btn);
-        gameplayed = (TextView) findViewById(R.id.game_playeed_text);
+        attachQuizStatusListener();
+        attachQuizListener();
+
+
+    }
+
+    private void attachOnClickListners() {
         mUserImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,15 +96,90 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        playbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+    }
+
+    private void initUI() {
+        //Firebase Reference
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        mUserImage = (CircularImageView) findViewById(R.id.user_image);
+        playbtn = (Button) findViewById(R.id.play_btn);
+        gameplayed = (TextView) findViewById(R.id.game_playeed_text);
+        quiz_name = (TextView) findViewById(R.id.quiz_name);
+        quiz_price = (TextView) findViewById(R.id.quiz_price);
+        quiz_time = (TextView) findViewById(R.id.quiz_time);
+        mQuestionsReference = FirebaseDatabase.getInstance().getReference().child("Questions");
+        mQuizReference = FirebaseDatabase.getInstance().getReference().child("Quizzes");
+    }
+
+
+    private void attachQuizListener() {
+        if (mQuizListener == null) {
+            mQuizListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Quiz quiz = dataSnapshot.getValue(Quiz.class);
+                    updateQuizDetail(quiz);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            mQuizReference.addValueEventListener(mQuizListener);
+        }
+    }
+
+    private void updateQuizDetail(Quiz quiz) {
+        quiz_name.setText(quiz.getQname());
+    }
+
+    private void attachQuizStatusListener() {
+        if (mQuizStatusListner == null) {
+            mQuizStatusListner = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    QuizStatus status = dataSnapshot.getValue(QuizStatus.class);
+                    liveStatus = status.getLive();
+                    currentQuesno = status.getCurques();
+                    showQuestion = status.getShowques();
+                    if (liveStatus == "0"){
+                        playbtn.setText("Let's Play!!");
+                    }
+                    else
+                        playbtn.setText("Not Live!!");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            mQuizStatusReference.addValueEventListener(mQuizStatusListner);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mAuth.removeAuthStateListener(mAuthListner);
+        detachAllListener();
     }
 
+    private void detachAllListener() {
+        mAuth.removeAuthStateListener(mAuthListner);
+        if(mQuestionListner!=null)
+            mQuestionListner = null;
+        if(mQuizListener!=null)
+            mQuizListener = null;
+        if(mQuizStatusListner!=null)
+            mQuizStatusListner = null;
 
-
+    }
 
 }
