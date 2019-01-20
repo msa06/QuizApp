@@ -1,59 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Registration"
-    android:gravity="center_horizontal"
-    android:textSize="24dp"
-    android:textColor="@color/colorPrimaryDark"/>
+    android:background="@drawable/background">
 
-    <EditText
-        android:id="@+id/nameRegistration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:layout_margin="10dp"
-        android:hint="Enter Name"/>
-   <EditText
-       android:id="@+id/emailRegistration"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:inputType="textEmailAddress"
-       android:layout_margin="10dp"
-       android:hint="Enter Email"/>
-    <EditText
-        android:id="@+id/passwordRegistration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:layout_margin="10dp"
-        android:hint="Enter Password"/>
-    <Button
-        android:id="@+id/emailRegisterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="@color/white"/>
-    <Button
-        android:id="@+id/want_to_login"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Want to Login?"
-        android:textSize="24dp"
-        android:gravity="center_horizontal"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_margin="10dp"/>
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/panelBackground"
+            android:gravity="center_horizontal"
+            android:text="Registration"
+            android:textStyle="italic"
+            android:textColor="@color/colorWhite"
+            android:textSize="30dp" />
+
+        <EditText
+            android:id="@+id/nameRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:hint="Enter Name"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/white"/>
+
+        <EditText
+            android:id="@+id/emailRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:hint="Enter Email"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/white"/>
+
+        <EditText
+            android:id="@+id/passwordRegistration"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:textColorHint="@color/white"/>
+
+        <Button
+            android:id="@+id/emailRegisterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/blue"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:text="Register"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/want_to_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:text="Back to login?"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
     </LinearLayout>
 
 </ScrollView>
