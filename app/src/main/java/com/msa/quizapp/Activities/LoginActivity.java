@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        attachDatabaseReadListner();
+        //attachDatabaseReadListner();
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             updateUI();
@@ -215,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void attachDatabaseReadListner() {
+   /* private void attachDatabaseReadListner() {
         if (mValueEventListner == null) {
             mValueEventListner = new ValueEventListener() {
                 @Override
@@ -246,5 +246,5 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         detachedDatabaseReadListner();
-    }
+    } */
 }
