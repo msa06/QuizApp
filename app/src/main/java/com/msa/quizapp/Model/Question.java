@@ -1,29 +1,41 @@
 package com.msa.quizapp.Model;
 
-import java.util.ArrayList;
-
 public class Question {
-    private String question;
-    private String correctanswer;
-    private ArrayList<String> options= new ArrayList<>();
+    private String ques,ans,op1,op2,op3,op4;
+
     public Question() {
     }
 
-    public Question(String question, String correctanswer, ArrayList<String> options) {
-        this.question = question;
-        this.correctanswer = correctanswer;
-        this.options = options;
+    public Question(String ques, String ans, String op1, String op2, String op3, String op4) {
+        this.ques = ques;
+        this.ans = ans;
+        this.op1 = op1;
+        this.op2 = op2;
+        this.op3 = op3;
+        this.op4 = op4;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getQues() {
+        return ques;
     }
 
-    public String getCorrectanswer() {
-        return correctanswer;
+    public String getAns() {
+        return ans;
     }
 
-    public ArrayList<String> getOptions() {
-        return options;
+    public String getOp1() {
+        return op1;
+    }
+
+    public String getOp2() {
+        return op2;
+    }
+
+    public String getOp3() {
+        return op3;
+    }
+
+    public String getOp4() {
+        return op4;
     }
 }
