@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.msa.quizapp.Model.Question;
 import com.msa.quizapp.Model.Quiz;
 import com.msa.quizapp.Model.QuizStatus;
 import com.msa.quizapp.R;
@@ -39,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private ValueEventListener mQuizStatusListner;
     private ValueEventListener mQuizListener;
     private ValueEventListener mQuestionListner;
+
+    private List<Question> questionList;
+
 
     @Override
     protected void onStart() {
@@ -84,7 +88,24 @@ public class MainActivity extends AppCompatActivity {
         playbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mQuestionListner == null) {
+                    mQuestionListner = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot questionsnap : dataSnapshot.getChildren()) {
+                                Question questions = questionsnap.getValue(Question.class);
+                                questionList.add(questions);
+                            }
+                            updateQuestion(currentQuesno, questionList);
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    };
+                    mQuestionsReference.addValueEventListener(mQuestionListner);
+                }
             }
         });
 
@@ -93,12 +114,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,ResultActivity.class));
                 finish();
-            }
-        });
-
-        playbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
             }
         });
     }
@@ -113,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         quiz_name = (TextView) findViewById(R.id.quiz_name);
         quiz_price = (TextView) findViewById(R.id.quiz_price);
         quiz_time = (TextView) findViewById(R.id.quiz_time);
-        mQuestionsReference = FirebaseDatabase.getInstance().getReference().child("Questions");
+        mQuestionsReference = FirebaseDatabase.getInstance().getReference().child("Question");
         mQuizReference = FirebaseDatabase.getInstance().getReference().child("Quizzes");
     }
 
@@ -161,9 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             };
-            mQuizStatusReference.addValueEventListener(mQuizStatusListner);
+            mQuizReference.addValueEventListener(mQuizListener);
         }
     }
+
 
     @Override
     protected void onStop() {

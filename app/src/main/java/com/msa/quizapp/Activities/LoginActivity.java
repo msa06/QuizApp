@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        //attachDatabaseReadListner();
+        attachDatabaseReadListner();
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             updateUI();
