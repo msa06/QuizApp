@@ -40,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private ValueEventListener mQuizStatusListner;
     private ValueEventListener mQuizListener;
     private ValueEventListener mQuestionListner;
+
     private List<Question> questionList;
+
 
     @Override
     protected void onStart() {
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     };
-                    mQuestionsReference.addValueEventListener(  mQuestionListner);
+                    mQuestionsReference.addValueEventListener(mQuestionListner);
                 }
             }
         });
@@ -114,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 
     private void initUI() {
@@ -176,9 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             };
-            mQuizStatusReference.addValueEventListener(mQuizStatusListner);
+            mQuizReference.addValueEventListener(mQuizListener);
         }
     }
+
 
     @Override
     protected void onStop() {
