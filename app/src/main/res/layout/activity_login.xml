@@ -80,16 +80,27 @@
        android:background="@drawable/continuebtn"
        android:layout_margin="8dp"
        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/forgot_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:gravity="center_horizontal"
+        android:textColor="@color/white"
+        android:textSize="15sp"/>
     <TextView
         android:id="@+id/registertext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register/Sign Up"
         android:textColor="@color/white"
+        android:textSize="15sp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="5dp"
         />
     <TextView
+        android:id="@+id/forgot_pwd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OR"
