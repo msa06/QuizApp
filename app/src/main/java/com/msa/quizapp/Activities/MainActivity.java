@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                                 Question questions = questionsnap.getValue(Question.class);
                                 questionList.add(questions);
                             }
-                            updateQuestion(currentQuesno, questionList);
+                            //updateQuestion(currentQuesno, questionList);
                         }
 
                         @Override
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
                     mQuestionsReference.addValueEventListener(mQuestionListner);
+                    startActivity(new Intent(MainActivity.this,Questions.class));
                 }
             }
         });
