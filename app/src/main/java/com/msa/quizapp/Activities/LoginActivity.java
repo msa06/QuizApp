@@ -227,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-   /* private void attachDatabaseReadListner() {
+   private void attachDatabaseReadListner() {
         if (mValueEventListner == null) {
             mValueEventListner = new ValueEventListener() {
                 @Override
@@ -258,5 +258,5 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         detachedDatabaseReadListner();
-    } */
+    } 
 }
