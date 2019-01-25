@@ -12,7 +12,7 @@
     <color name="textColor">#252525</color>
     <color name="purple">#aa55ff</color>
     <color name="blue">#584bdd</color>
-
+    <color name="correctansgreen">#2e7d32</color>
     <color name="colorWhite">#fff</color>
     <color name="colorOffWhite">#80ffffff</color>
 </resources>
