@@ -58,9 +58,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // ...
         // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
         mUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        attachDatabaseReadListner();
 
         email_register = (TextView) findViewById(R.id.registertext);
         email_register.setOnClickListener(new View.OnClickListener() {
@@ -207,15 +207,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        attachDatabaseReadListner();
-        FirebaseUser mUser = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
         if (mUser != null) {
             updateUI();
 
         }
     }
 
-   /* private void attachDatabaseReadListner() {
+    private void attachDatabaseReadListner() {
         if (mValueEventListner == null) {
             mValueEventListner = new ValueEventListener() {
                 @Override
@@ -246,5 +247,5 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         detachedDatabaseReadListner();
-    } */
+    }
 }

@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                                 Question questions = questionsnap.getValue(Question.class);
                                 questionList.add(questions);
                             }
-                            updateQuestion(currentQuesno, questionList);
+                           // updateQuestion(currentQuesno, questionList);
                         }
 
                         @Override
@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         quiz_time = (TextView) findViewById(R.id.quiz_time);
         mQuestionsReference = FirebaseDatabase.getInstance().getReference().child("Question");
         mQuizReference = FirebaseDatabase.getInstance().getReference().child("Quizzes");
+        mQuizStatusReference = FirebaseDatabase.getInstance().getReference().child("QuizStatus");
     }
 
 
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             };
-            mQuizReference.addValueEventListener(mQuizListener);
+            mQuizStatusReference.addValueEventListener(mQuizStatusListner);
         }
     }
 
