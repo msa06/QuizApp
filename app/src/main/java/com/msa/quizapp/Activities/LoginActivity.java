@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private SignInButton signInButton;
     private final static int RC_SIGN_IN = 2;
     private final static String TAG = "LOGIN ACTIVITY";
-    private TextView email_register;
+    private TextView email_register, forgot_pwd;
     Button email_signin;
     EditText email, password;
 
@@ -58,9 +58,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // ...
         // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         mUserDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
-
-        attachDatabaseReadListner();
 
         email_register = (TextView) findViewById(R.id.registertext);
         email_register.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +75,18 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.loginEmail);
         password = findViewById(R.id.loginPassword);
         email_signin = (Button) findViewById(R.id.login_btn);
+
+        forgot_pwd = (TextView)findViewById(R.id.forgot_password);
+        forgot_pwd.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+
+            }
+        });
+
+
 
         email_signin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,16 +219,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-
+        //attachDatabaseReadListner();
+        FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             updateUI();
 
         }
     }
 
-    private void attachDatabaseReadListner() {
+   private void attachDatabaseReadListner() {
         if (mValueEventListner == null) {
             mValueEventListner = new ValueEventListener() {
                 @Override
@@ -247,5 +258,5 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         detachedDatabaseReadListner();
-    }
+    } 
 }
