@@ -91,13 +91,13 @@ public class Questions extends AppCompatActivity {
                     currentQuesno = status.getCurques();
                     showQuestion = status.getShowques();
                     if (status.getLive().equals("1")) {
-                        v1.start();
-                    if (status.getShowques().equals("1") ) {
-                        fraginplace = true;
-                        setfragement(questionView);
-                    } else {
-                        onBackPressed();
-                    }
+                        v1.start();         
+                        if (status.getShowques().equals("1") ) {
+                            fraginplace = true;
+                            setfragement(questionView);
+                        } else {
+                            onBackPressed();
+                        }
                     }
                     else {
                         v1.pause();

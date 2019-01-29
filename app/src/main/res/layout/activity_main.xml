@@ -15,17 +15,6 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/icon" />
 
-    <Button
-        android:layout_width="80dp"
-        android:layout_height="30dp"
-        android:layout_margin="16dp"
-        android:background="@color/blue"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:textColor="@color/white"
-        android:text="1000"
-        android:layout_marginTop="18dp" />
-
     <TextView
         android:id="@+id/quiz_name"
         style="@style/headingtext"
