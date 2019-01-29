@@ -88,24 +88,8 @@ public class MainActivity extends AppCompatActivity {
         playbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mQuestionListner == null) {
-                    mQuestionListner = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot questionsnap : dataSnapshot.getChildren()) {
-                                Question questions = questionsnap.getValue(Question.class);
-                                questionList.add(questions);
-                            }
-                           // updateQuestion(currentQuesno, questionList);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    };
-                    mQuestionsReference.addValueEventListener(mQuestionListner);
-                }
+                //GO to The Question Activity
+               
             }
         });
 
