@@ -1,6 +1,7 @@
 package com.msa.quizapp.Activities;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -9,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,34 +22,35 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.msa.quizapp.Model.Question;
 import com.msa.quizapp.Model.QuizStatus;
+import com.msa.quizapp.Model.User;
 import com.msa.quizapp.R;
 
 import java.util.ArrayList;
 public class QuestionView extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-    ProgressBar progressBar;
-    FragmentManager fragman;
-    CountDownTimer waitTimer;
+    private ProgressBar progressBar;
+    private FragmentManager fragman;
+    private CountDownTimer waitTimer;
     boolean fraginplace,doneloading;
-    int counter;
+    int counter,pts;
     boolean timeup=false;
-    ArrayList<Question> questions;
-    TextView questiionView, op1, op2, op3, op4,time;
+    private ArrayList<Question> questions;
+    private TextView questiionView, op1, op2, op3, op4,time;
     boolean clicked;
     private String liveStatus, showQuestion;
     private String currentQuesno = "1";
     private ValueEventListener mQuizStatusListner;
     private ValueEventListener mQuestionListner;
-    DatabaseReference mQuizStatusReference;
-    private DatabaseReference mQuizReference;
+    private DatabaseReference mQuizStatusReference;
+   private DatabaseReference UserReference;
     private DatabaseReference mQuestionsReference;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_question_view, container, false);
 
-        counter =  0;
+        counter = pts= 0;
         questions = new ArrayList<>();
         clicked =fraginplace=doneloading=false;
         fragman= getFragmentManager();
@@ -65,8 +66,11 @@ public class QuestionView extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        //mUser.getUid()
+        //System.out.println(mUser);
         mQuestionsReference=FirebaseDatabase.getInstance().getReference().child("Question");
         mQuizStatusReference = FirebaseDatabase.getInstance().getReference().child("QuizStatus");
+        UserReference=FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
         attachQuestionListener();
         attachQuizStatusListener();
 
@@ -122,11 +126,15 @@ public class QuestionView extends Fragment {
             }
 
             if (correctans != null) {
+                System.out.println("Correct ans : "+ correctans.getText().toString());
+                System.out.println("Selected ans : "+ option.getText().toString());
                 if (!clicked) {
                     if (correctans != option) {
+                        System.out.println("entered into wrong question part");
                         option.setBackgroundResource(R.drawable.wrongquestion);
                     } else {
                         option.setBackgroundResource(R.drawable.correctquestion);
+                        pts++;
                     }
                 }
             } else
@@ -137,11 +145,15 @@ public class QuestionView extends Fragment {
     }
 
     private void displayNextQuestion(int count) {
+        op1.setBackgroundResource(R.drawable.questionsholder);
+        op2.setBackgroundResource(R.drawable.questionsholder);
+        op3.setBackgroundResource(R.drawable.questionsholder);
+        op4.setBackgroundResource(R.drawable.questionsholder);
+        clicked=false;
         if(doneloading) {
             if(count>=5)
                 count=0;
              progressBar.setVisibility(View.GONE);
-            System.out.println("Questions here is " + questions);
             questiionView.setText(questions.get(count).getQues());
             op1.setText(questions.get(count).getOp1());
             op2.setText(questions.get(count).getOp2());
@@ -196,6 +208,12 @@ private void attachQuestionListener() {
                             reverseTimer(5, time);
                         }
                     }
+                    else
+                    {
+//                        Intent i =new Intent(getActivity(),ResultActivity.class);
+//                        i.putExtra("Points",pts);
+//                        startActivity(i);
+                    }
                 }
 
                 @Override
@@ -228,6 +246,12 @@ private void attachQuestionListener() {
 
         }.start();
     }
+
+    public void updatepoints(String uid)
+    {
+        User user =new User();
+    }
+
      public void onStart() {
         super.onStart();
             progressBar.setVisibility(View.VISIBLE);

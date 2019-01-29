@@ -104,7 +104,8 @@ public class Questions extends AppCompatActivity {
                         fragman.popBackStack();
                     }
                     if (!status.getShowques().equals("1") ) {
-                        onBackPressed();
+                        //onBackPressed();
+                        fragman.popBackStack();
                     }
                 }
 
