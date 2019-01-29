@@ -35,6 +35,7 @@ public class Questions extends AppCompatActivity {
     FragmentManager fragman;
     boolean fraginplace;
     private VideoView v1;
+    private Button endbtn;
     private String liveStatus, showQuestion;
     private String currentQuesno = "1";
     private ValueEventListener mQuizStatusListner;
@@ -50,7 +51,14 @@ public class Questions extends AppCompatActivity {
         attachQuizStatusListener();
         fragman= getSupportFragmentManager();
         v1=(VideoView)findViewById(R.id.videoview);
-
+        endbtn=(Button)findViewById(R.id.endquiz);
+        endbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    startActivity(new Intent(Questions.this,MainActivity.class));
+                    onStop();
+            }
+        });
 
     }
 
@@ -83,7 +91,7 @@ public class Questions extends AppCompatActivity {
                     currentQuesno = status.getCurques();
                     showQuestion = status.getShowques();
                     if (status.getLive().equals("1")) {
-                        v1.start();
+                        v1.start();         
                         if (status.getShowques().equals("1") ) {
                             fraginplace = true;
                             setfragement(questionView);

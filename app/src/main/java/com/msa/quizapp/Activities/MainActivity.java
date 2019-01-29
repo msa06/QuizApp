@@ -23,6 +23,8 @@ import com.msa.quizapp.R;
 
 import java.util.List;
 
+import static java.lang.System.out;
+
 public class MainActivity extends AppCompatActivity {
 
     //Firebase Auth
@@ -89,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //GO to The Question Activity
-               
+                    startActivity(new Intent(MainActivity.this, Questions.class));
+                    finish();
             }
         });
 
@@ -147,13 +150,16 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     QuizStatus status = dataSnapshot.getValue(QuizStatus.class);
                     liveStatus = status.getLive();
+                    System.out.println("LIVE : " + liveStatus);
                     currentQuesno = status.getCurques();
                     showQuestion = status.getShowques();
-                    if (liveStatus == "0"){
+                    if (liveStatus.equals("1")) {
                         playbtn.setText("Let's Play!!");
-                    }
-                    else
+                        playbtn.setEnabled(true);
+                    } else {
                         playbtn.setText("Not Live!!");
+                        playbtn.setEnabled(false);
+                    }
                 }
 
                 @Override
