@@ -1,9 +1,9 @@
 package com.msa.quizapp.Activities;
 
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.msa.quizapp.Model.Question;
+import com.msa.quizapp.Model.QuizStatus;
 import com.msa.quizapp.R;
 
 import java.util.ArrayList;
@@ -30,14 +31,19 @@ public class QuestionView extends Fragment {
     ProgressBar progressBar;
     FragmentManager fragman;
     CountDownTimer waitTimer;
-    boolean fraginplace;
+    boolean fraginplace,doneloading;
     int counter;
     boolean timeup=false;
     ArrayList<Question> questions;
     TextView questiionView, op1, op2, op3, op4,time;
     boolean clicked;
-    Button nextQuestionbtn;
-
+    private String liveStatus, showQuestion;
+    private String currentQuesno = "1";
+    private ValueEventListener mQuizStatusListner;
+    private ValueEventListener mQuestionListner;
+    DatabaseReference mQuizStatusReference;
+    private DatabaseReference mQuizReference;
+    private DatabaseReference mQuestionsReference;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -45,13 +51,12 @@ public class QuestionView extends Fragment {
 
         counter =  0;
         questions = new ArrayList<>();
-        clicked = false;
-        fraginplace=false;
+        clicked =fraginplace=doneloading=false;
         fragman= getFragmentManager();
         progressBar=(ProgressBar)v.findViewById(R.id.questionloadprog);
         questiionView = (TextView) v.findViewById(R.id.questionView);
-        nextQuestionbtn = (Button) v.findViewById(R.id.nextQuestion);
-        nextQuestionbtn.setEnabled(false);
+
+        //Initialise the views
         time=(TextView)v.findViewById(R.id.timeview);
         op1 = (TextView) v.findViewById(R.id.option1);
         op2 = (TextView) v.findViewById(R.id.option2);
@@ -60,27 +65,11 @@ public class QuestionView extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
+        mQuestionsReference=FirebaseDatabase.getInstance().getReference().child("Question");
+        mQuizStatusReference = FirebaseDatabase.getInstance().getReference().child("QuizStatus");
+        attachQuestionListener();
+        attachQuizStatusListener();
 
-        onAuthSuccess(mUser);
-        nextQuestionbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (counter < 4) {
-                    //resets  colours
-                    clicked = false;
-                    timeup=false;
-                    time.setBackgroundColor(getResources().getColor(R.color.white));
-
-                    op1.setBackgroundResource(R.drawable.questionsholder);
-                    op2.setBackgroundResource(R.drawable.questionsholder);
-                    op3.setBackgroundResource(R.drawable.questionsholder);
-                    op4.setBackgroundResource(R.drawable.questionsholder);
-                    displayNextQuestion(++counter);
-                    reverseTimer(5,time);
-                }
-            }
-        });
         op1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +82,6 @@ public class QuestionView extends Fragment {
                 markcorrectanswer(op2);
             }
         });
-
         op3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,79 +102,109 @@ public class QuestionView extends Fragment {
         //Checks if the answer is correct and colours the textview accordingly
         //To stop the timer
         if(waitTimer != null) {
-            waitTimer.onFinish();
-            //waitTimer.cancel();
+            waitTimer.cancel();
             waitTimer = null;
         }
         TextView correctans = null;
-        if (op1.getText().toString().equals(questions.get(counter).getAns())) {
-            op1.setBackgroundResource(R.drawable.correctquestion);
-            correctans = op1;
-        } else if (op2.getText().toString().equals(questions.get(counter).getAns())) {
-            op2.setBackgroundResource(R.drawable.correctquestion);
-            correctans = op2;
-        } else if (op3.getText().toString().equals(questions.get(counter).getAns())) {
-            op3.setBackgroundResource(R.drawable.correctquestion);
-            correctans = op3;
-        } else if (op4.getText().toString().equals(questions.get(counter).getAns())) {
-            op4.setBackgroundResource(R.drawable.correctquestion);
-            correctans = op4;
-        }
-
-        if (correctans != null) {
-            if (!clicked) {
-                if (correctans != option) {
-                    option.setBackgroundResource(R.drawable.wrongquestion);
-                } else {
-                    option.setBackgroundResource(R.drawable.correctquestion);
-                }
+        if(doneloading) {
+            if (op1.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                op1.setBackgroundResource(R.drawable.correctquestion);
+                correctans = op1;
+            } else if (op2.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                op2.setBackgroundResource(R.drawable.correctquestion);
+                correctans = op2;
+            } else if (op3.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                op3.setBackgroundResource(R.drawable.correctquestion);
+                correctans = op3;
+            } else if (op4.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                op4.setBackgroundResource(R.drawable.correctquestion);
+                correctans = op4;
             }
-        } else
-            System.out.println("Error occurred");
 
-        clicked = true;
-
-    }
-
-    private void displayNextQuestion(int counter) {
-        questiionView.setText(questions.get(counter).getQues());
-        op1.setText(questions.get(counter).getOp1());
-        op2.setText(questions.get(counter).getOp2());
-        op3.setText(questions.get(counter).getOp3());
-        op4.setText(questions.get(counter).getOp4());
-
-    }
-
-
-    private void onAuthSuccess(final FirebaseUser user) {
-
-        if (user != null) {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    DataSnapshot questionSnapshot = dataSnapshot.child("Question");//.child(Integer.toString(counter));
-                    Iterable<DataSnapshot> questionChildren = questionSnapshot.getChildren();
-
-                    //Takes all the questions from the database and creates a local arraylist of questions
-                    for (DataSnapshot question : questionChildren) {
-                        Question q = question.getValue(Question.class);
-                        questions.add(q);
+            if (correctans != null) {
+                if (!clicked) {
+                    if (correctans != option) {
+                        option.setBackgroundResource(R.drawable.wrongquestion);
+                    } else {
+                        option.setBackgroundResource(R.drawable.correctquestion);
                     }
-                    nextQuestionbtn.setEnabled(true);
-                    displayNextQuestion(0);
-                    progressBar.setVisibility(View.GONE);
-                    reverseTimer(5,time);
                 }
+            } else
+                System.out.println("Error occurred");
 
+            clicked = true;
+        }
+    }
+
+    private void displayNextQuestion(int count) {
+        if(doneloading) {
+            if(count>=5)
+                count=0;
+             progressBar.setVisibility(View.GONE);
+            System.out.println("Questions here is " + questions);
+            questiionView.setText(questions.get(count).getQues());
+            op1.setText(questions.get(count).getOp1());
+            op2.setText(questions.get(count).getOp2());
+            op3.setText(questions.get(count).getOp3());
+            op4.setText(questions.get(count).getOp4());
+        }
+        else
+            System.out.println("not done loading");
+    }
+
+private void attachQuestionListener() {
+    if (mQuestionListner == null) {
+        mQuestionListner = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot questionsnap : dataSnapshot.getChildren()) {
+                    Question q = questionsnap.getValue(Question.class);
+                    questions.add(q);
+                }
+                System.out.println("question listener fired");
+                doneloading = true;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        mQuestionsReference.addValueEventListener(mQuestionListner);
+    }
+}
+
+    private void attachQuizStatusListener() {
+        if (mQuizStatusListner == null) {
+            mQuizStatusListner = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    QuizStatus status = dataSnapshot.getValue(QuizStatus.class);
+                    liveStatus = status.getLive();
+                    currentQuesno = status.getCurques();
+                    showQuestion = status.getShowques();
+                    System.out.println("Live :" + liveStatus);
+                    System.out.println("show question :" + showQuestion);
+                    System.out.println("Current question :" + currentQuesno);
+                    if(liveStatus.equals("1")) {
+                        if (showQuestion.equals("1")) {
+                            if(waitTimer != null) {
+                                waitTimer.cancel();
+                                waitTimer = null;
+                            }
+                            displayNextQuestion(Integer.parseInt(currentQuesno));
+                            reverseTimer(5, time);
+                        }
+                    }
+                }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            });
+            };
+            mQuizStatusReference.addValueEventListener(mQuizStatusListner);
         }
-
     }
 
     public void reverseTimer(int Seconds, final TextView tv) {
@@ -201,23 +219,18 @@ public class QuestionView extends Fragment {
 
             public void onFinish() {
                 //To prevent the timer from causing a npe from lack of a context
-                int orientation = getActivity().getResources().getConfiguration().orientation;
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+               // int orientation = getActivity().getResources().getConfiguration().orientation;
+               // if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     tv.setText("Completed");
-                    tv.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                     timeup = true;
-                    if(waitTimer != null) {
-                        waitTimer.cancel();
-                        waitTimer = null;
-                    }
+
                 }
-            }
+
         }.start();
     }
      public void onStart() {
         super.onStart();
             progressBar.setVisibility(View.VISIBLE);
-            onAuthSuccess(mUser);
         }
 
     @Override
@@ -228,5 +241,17 @@ public class QuestionView extends Fragment {
             waitTimer = null;
         }
 
+    }
+    @Override
+     public void onStop() {
+        super.onStop();
+        detachAllListener();
+    }
+
+    private void detachAllListener() {
+        if(mQuestionListner!=null)
+            mQuestionListner = null;
+        if(mQuizStatusListner!=null)
+            mQuizStatusListner = null;
     }
 }

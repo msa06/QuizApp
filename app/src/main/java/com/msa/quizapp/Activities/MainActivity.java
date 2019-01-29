@@ -23,6 +23,8 @@ import com.msa.quizapp.R;
 
 import java.util.List;
 
+import static java.lang.System.out;
+
 public class MainActivity extends AppCompatActivity {
 
     //Firebase Auth
@@ -88,25 +90,9 @@ public class MainActivity extends AppCompatActivity {
         playbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mQuestionListner == null) {
-                    mQuestionListner = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot questionsnap : dataSnapshot.getChildren()) {
-                                Question questions = questionsnap.getValue(Question.class);
-                                questionList.add(questions);
-                            }
-                            //updateQuestion(currentQuesno, questionList);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    };
-                    mQuestionsReference.addValueEventListener(mQuestionListner);
-                    startActivity(new Intent(MainActivity.this,Questions.class));
-                }
+                //GO to The Question Activity
+                    startActivity(new Intent(MainActivity.this, Questions.class));
+                    finish();
             }
         });
 
@@ -131,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         quiz_time = (TextView) findViewById(R.id.quiz_time);
         mQuestionsReference = FirebaseDatabase.getInstance().getReference().child("Question");
         mQuizReference = FirebaseDatabase.getInstance().getReference().child("Quizzes");
+        mQuizStatusReference = FirebaseDatabase.getInstance().getReference().child("QuizStatus");
     }
 
 
@@ -163,13 +150,16 @@ public class MainActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     QuizStatus status = dataSnapshot.getValue(QuizStatus.class);
                     liveStatus = status.getLive();
+                    System.out.println("LIVE : " + liveStatus);
                     currentQuesno = status.getCurques();
                     showQuestion = status.getShowques();
-                    if (liveStatus == "0"){
+                    if (liveStatus.equals("1")) {
                         playbtn.setText("Let's Play!!");
-                    }
-                    else
+                        playbtn.setEnabled(true);
+                    } else {
                         playbtn.setText("Not Live!!");
+                        playbtn.setEnabled(false);
+                    }
                 }
 
                 @Override
@@ -177,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             };
-            mQuizReference.addValueEventListener(mQuizListener);
+            mQuizStatusReference.addValueEventListener(mQuizStatusListner);
         }
     }
 
