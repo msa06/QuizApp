@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //GO to The Question Activity
-                    startActivity(new Intent(MainActivity.this, Questions.class));
+                    startActivity(new Intent(MainActivity.this, HowToActivity.class));
                     finish();
             }
         });
