@@ -25,7 +25,7 @@ import com.msa.quizapp.Model.QuizStatus;
 import com.msa.quizapp.R;
 
 import java.util.ArrayList;
-public class QuestionView extends Fragment {
+public class QuestionViewFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     ProgressBar progressBar;
