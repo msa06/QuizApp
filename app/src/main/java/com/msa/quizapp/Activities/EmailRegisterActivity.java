@@ -14,12 +14,24 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.msa.quizapp.Model.User;
 import com.msa.quizapp.R;
+
+import java.util.Objects;
 
 public class EmailRegisterActivity extends AppCompatActivity {
     Button register,login;
     EditText name, email, password;
     private FirebaseAuth auth;
+    DatabaseReference databaseReference;
+    FirebaseUser user;
+    FirebaseDatabase database;
 
 
     @Override
@@ -28,7 +40,10 @@ public class EmailRegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_email_register);
 
         //Get Firebase auth instance
+        database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        databaseReference = database.getReference().child("Users");
 
         name = findViewById(R.id.nameRegistration);
         email = findViewById(R.id.emailRegistration);
@@ -49,9 +64,12 @@ public class EmailRegisterActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
+               // String uid = user.getUid();
                 String getName = name.getText().toString().trim();
                 String getEmail = email.getText().toString().trim();
                 String getPassword = password.getText().toString().trim();
+
 
                 if (TextUtils.isEmpty(getEmail)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -68,11 +86,13 @@ public class EmailRegisterActivity extends AppCompatActivity {
                 }
 
                 //create user
+                final User user = new User(getName, getEmail,0,0);
+
                 auth.createUserWithEmailAndPassword(getEmail, getPassword)
                         .addOnCompleteListener(EmailRegisterActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(EmailRegisterActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EmailRegisterActivity.this, "Welcome!", Toast.LENGTH_SHORT).show();
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
@@ -80,15 +100,19 @@ public class EmailRegisterActivity extends AppCompatActivity {
                                     Toast.makeText(EmailRegisterActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
+                                databaseReference.child(user.getName())
+                                   .setValue(user);
+                           Toast.makeText(EmailRegisterActivity.this,"User created successfully",Toast.LENGTH_SHORT);
+
                                     startActivity(new Intent(EmailRegisterActivity.this, MainActivity.class));
                                     finish();
                                 }
                             }
                         });
-
             };
 
 
         });
     }
+
 }
