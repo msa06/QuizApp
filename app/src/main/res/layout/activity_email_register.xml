@@ -2,7 +2,8 @@
 <ScrollView
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/background">
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -13,8 +14,14 @@
     android:layout_height="wrap_content"
     android:text="Registration"
     android:gravity="center_horizontal"
+    android:layout_margin="10dp"
     android:textSize="24dp"
-    android:textColor="@color/colorPrimaryDark"/>
+    android:textColor="@color/white"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/white"/>
 
     <EditText
         android:id="@+id/nameRegistration"
@@ -22,38 +29,46 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:layout_margin="10dp"
-        android:hint="Enter Name"/>
+        android:hint="Enter Name"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"/>
    <EditText
        android:id="@+id/emailRegistration"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:inputType="textEmailAddress"
        android:layout_margin="10dp"
-       android:hint="Enter Email"/>
+       android:hint="Enter Email"
+       android:textColor="@color/white"
+       android:textColorHint="@color/white"/>
     <EditText
         android:id="@+id/passwordRegistration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:layout_margin="10dp"
-        android:hint="Enter Password"/>
+        android:hint="Enter Password"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"/>
     <Button
         android:id="@+id/emailRegisterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
         android:layout_gravity="center_horizontal"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="@color/white"/>
+        android:background="@drawable/continuebtn"
+        android:textStyle="italic"
+        android:textSize="19sp"/>
+
     <Button
         android:id="@+id/want_to_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Want to Login?"
-        android:textSize="24dp"
+        android:layout_margin="15dp"
+        android:background="@android:color/transparent"
         android:gravity="center_horizontal"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_margin="10dp"/>
+        android:text="Back to Login?"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
     </LinearLayout>
 
 </ScrollView>
