@@ -95,25 +95,8 @@
         android:layout_height="wrap_content"
         android:text="Register/Sign Up"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="20sp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="5dp"
         />
-    <TextView
-        android:id="@+id/forgot_pwd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OR"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:layout_margin="8dp"
-        android:layout_gravity="center_horizontal"/>
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        />
-
 </LinearLayout>
