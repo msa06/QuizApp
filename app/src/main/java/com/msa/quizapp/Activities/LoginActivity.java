@@ -110,10 +110,6 @@ public class LoginActivity extends AppCompatActivity {
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                //progressBar.setVisibility(View.GONE);
                                 if (!task.isSuccessful()) {
                                     // there was an error
                                     if (password.length() < 6) {
@@ -131,75 +127,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-        //Setting Signin Button
-        SignInButton signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_WIDE);
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
-
-
-        //Firebase Google Sign in
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-    }
-
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                // ...
-            }
-        }
-    }
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            mUser = mAuth.getCurrentUser();
-                            updateUI();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            updateUI();
-                        }
-
-                        // ...
-                    }
-                });
     }
 
     private void updateUI() {
@@ -207,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void saveUserData(FirebaseUser user) {
+   private void saveUserData(FirebaseUser user) {
         String uid = user.getUid();
         String name = user.getDisplayName();
         String email = user.getEmail();
@@ -219,30 +146,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        //attachDatabaseReadListner();
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             updateUI();
 
-        }
-    }
-
-   private void attachDatabaseReadListner() {
-        if (mValueEventListner == null) {
-            mValueEventListner = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.hasChild(mUser.getUid())) {
-                        saveUserData(mUser);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            };
-            mUserDatabaseReference.addValueEventListener(mValueEventListner);
         }
     }
 
@@ -258,5 +165,5 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         detachedDatabaseReadListner();
-    } 
+    }
 }
