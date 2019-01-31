@@ -18,6 +18,18 @@ public class User {
         this.rank = rank;
     }
 
+    public User( String name, String emailid, int totalpt, int rank) {
+        this.name = name;
+        this.emailid = emailid;
+        this.totalpt = totalpt;
+        this.rank = rank;
+    }
+    public User(String name, String emailid) {
+        this.name = name;
+        this.emailid = emailid;
+
+    }
+
     public int getTotalpt() {
         return totalpt;
     }
