@@ -24,8 +24,9 @@
         <activity android:name=".Activities.ResultActivity" />
         <activity android:name=".Activities.EmailRegisterActivity" />
         <activity android:name=".Activities.MainActivity"></activity>
-        
-          <service
+        <activity android:name=".Activities.ResetPasswordActivity" />
+
+        <service
             android:name=".Activities.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
@@ -42,3 +43,4 @@
     </application>
 
 </manifest>
+
