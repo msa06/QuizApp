@@ -92,25 +92,27 @@ public class Questions extends AppCompatActivity {
                     showQuestion = status.getShowques();
                     if (status.getLive().equals("1")) {
                         v1.start();
-                        if (status.getShowques().equals("1") ) {
-                            fraginplace = true;
-                            setfragement(questionView);
-                        } else {
-                            if(fraginplace) {
-                                fragman.popBackStack();
-                                fraginplace = false;
+                        if (showQuestion != null) {
+                            if (status.getShowques().equals("1")) {
+                                fraginplace = true;
+                                setfragement(questionView);
+                            } else {
+                                if (fraginplace) {
+                                    fragman.popBackStack();
+                                    fraginplace = false;
+                                }
                             }
                         }
+                    }else {
+                            v1.pause();
+                            fragman.popBackStack();
+                            fraginplace = false;
+                            startActivity(new Intent(Questions.this, ResultActivity.class));
+                        }
+                        if (!status.getShowques().equals("1")) {
+                            // onBackPressed();
+                        }
                     }
-                    else {
-                        v1.pause();
-                        fragman.popBackStack();
-                        fraginplace = false;
-                    }
-                    if (!status.getShowques().equals("1") ) {
-                       // onBackPressed();
-                }
-                }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {

@@ -30,7 +30,7 @@ public class EmailRegisterActivity extends AppCompatActivity {
     EditText name, email, password;
     private FirebaseAuth auth;
     DatabaseReference databaseReference;
-    FirebaseUser user;
+    FirebaseUser muser;
     FirebaseDatabase database;
 
 
@@ -42,7 +42,7 @@ public class EmailRegisterActivity extends AppCompatActivity {
         //Get Firebase auth instance
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        muser = auth.getCurrentUser();
         databaseReference = database.getReference().child("Users");
 
         name = findViewById(R.id.nameRegistration);
@@ -100,7 +100,9 @@ public class EmailRegisterActivity extends AppCompatActivity {
                                     Toast.makeText(EmailRegisterActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                databaseReference.child(user.getName())
+                                    FirebaseUser firebaseUser =  auth.getCurrentUser();
+                                    String userId = firebaseUser.getUid();
+                                databaseReference.child(userId)
                                    .setValue(user);
                            Toast.makeText(EmailRegisterActivity.this,"User created successfully",Toast.LENGTH_SHORT);
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +25,8 @@ import com.msa.quizapp.Model.Rank;
 import com.msa.quizapp.Model.User;
 import com.msa.quizapp.R;
 
+import java.util.ArrayList;
+
 public class ResultActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private TextView mToolTitle;
@@ -33,8 +36,12 @@ public class ResultActivity extends AppCompatActivity {
     private FirebaseUser mUser;
     private DatabaseReference currentUserReference;
     private DatabaseReference rankingReference;
-    private int result;
+    private Long res;
+    private ValueEventListener mUserListner;
+    DatabaseReference mUserReference;
     TextView name, username;
+    private ArrayList<User> ranklist;
+    boolean present;
     ImageView user_pic;
 
     @Override
@@ -51,18 +58,16 @@ public class ResultActivity extends AppCompatActivity {
         user_pic = findViewById(R.id.user_image);
 
 
-
-
+        present=false;
+        ranklist=new ArrayList<>();
         setSupportActionBar(mToolbar);
         mToolTitle.setText(mToolbar.getTitle());
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-       //Get Intent;
-        Intent resultIntent = getIntent();
-        result = resultIntent.getIntExtra("Result",0);
 
+        result_text=(TextView)findViewById(R.id.ptsview);
         //Get Reference
         //result_text = (TextView) findViewById(R.id.result_text);
         //result_message = (TextView) findViewById(R.id.result_message);
@@ -74,14 +79,11 @@ public class ResultActivity extends AppCompatActivity {
         //Firebase
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        rankingReference = FirebaseDatabase.getInstance().getReference().child("Ranking");
-        currentUserReference = FirebaseDatabase.getInstance().getReference().child("Users");
+        currentUserReference = FirebaseDatabase.getInstance().getReference();
 
-        if(mUser != null){
-            if(mUser.getDisplayName() != null){
-                username.setText(mUser.getDisplayName());
-            }
-        }
+
+        attachUserListner();
+
         /*currentUserReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -151,4 +153,54 @@ public class ResultActivity extends AppCompatActivity {
         }
         result_message.setText(message);
     }*/
+   public void attachUserListner()
+   {
+       if(mUserListner==null)
+       {
+           mUserListner= new ValueEventListener() {
+               @Override
+               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   DataSnapshot contactSnapshot = dataSnapshot.child("Users");
+                   Iterable<DataSnapshot> contactChildren = contactSnapshot.getChildren();
+                   for (DataSnapshot contact : contactChildren) {
+                       if(contact.getKey().equals(mUser.getUid())) {
+                            res = (Long) contact.child("totalpt").getValue();
+                            System.out.println("Pts is "+ res);
+                       }// User c = contact.getValue(User.class);
+//                       if(contact.getKey().equals(mUser.getUid()))
+//                       {
+//                           System.out.println(c.getName());
+//                           ranklist.add(c);
+//                       }
+                   }
+                   setresult(res);
+               }
+
+               @Override
+               public void onCancelled(@NonNull DatabaseError databaseError) {
+
+               }
+           };
+           currentUserReference.addValueEventListener(mUserListner);
+       }
+   }
+
+    private void setresult(Long res) {
+        result_text.setText("Total Points:"+res);
+        }
+
+    public void onBackPressed() {
+       startActivity(new Intent(ResultActivity.this,MainActivity.class));
+
+   }
+    public void onStop() {
+        super.onStop();
+        detachAllListener();
+    }
+
+    private void detachAllListener() {
+        if(mUserListner!=null)
+            mUserListner = null;
+
+    }
 }

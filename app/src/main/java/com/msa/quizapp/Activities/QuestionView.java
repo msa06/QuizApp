@@ -42,8 +42,11 @@ public class QuestionView extends Fragment {
     private ValueEventListener mQuizStatusListner;
     private ValueEventListener mQuestionListner;
     DatabaseReference mQuizStatusReference;
-    private DatabaseReference mQuizReference;
+    private DatabaseReference mUserPtsReference;
     private DatabaseReference mQuestionsReference;
+    private DatabaseReference mUserReference;
+    private int pts=0;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -67,6 +70,8 @@ public class QuestionView extends Fragment {
         mUser = mAuth.getCurrentUser();
         mQuestionsReference=FirebaseDatabase.getInstance().getReference().child("Question");
         mQuizStatusReference = FirebaseDatabase.getInstance().getReference().child("QuizStatus");
+        mUserReference = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
+        mUserPtsReference=mUserReference.child("totalpt");
         attachQuestionListener();
         attachQuizStatusListener();
 
@@ -107,32 +112,42 @@ public class QuestionView extends Fragment {
         }
         TextView correctans = null;
         if(doneloading) {
-            if (op1.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
-                op1.setBackgroundResource(R.drawable.correctquestion);
-                correctans = op1;
-            } else if (op2.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
-                op2.setBackgroundResource(R.drawable.correctquestion);
-                correctans = op2;
-            } else if (op3.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
-                op3.setBackgroundResource(R.drawable.correctquestion);
-                correctans = op3;
-            } else if (op4.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
-                op4.setBackgroundResource(R.drawable.correctquestion);
-                correctans = op4;
-            }
 
-            if (correctans != null) {
-                if (!clicked) {
-                    if (correctans != option) {
-                        option.setBackgroundResource(R.drawable.wrongquestion);
-                    } else {
-                        option.setBackgroundResource(R.drawable.correctquestion);
-                    }
+                if (op1.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                    op1.setBackgroundResource(R.drawable.correctquestion);
+                    correctans = op1;
+                } else if (op2.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                    op2.setBackgroundResource(R.drawable.correctquestion);
+                    correctans = op2;
+                } else if (op3.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                    op3.setBackgroundResource(R.drawable.correctquestion);
+                    correctans = op3;
+                } else if (op4.getText().toString().equals(questions.get(Integer.parseInt(currentQuesno)).getAns())) {
+                    op4.setBackgroundResource(R.drawable.correctquestion);
+                    correctans = op4;
                 }
-            } else
-                System.out.println("Error occurred");
+            if (!timeup) {
+                if (correctans != null) {
+                    if (!clicked) {
+                        if (correctans != option) {
+                            option.setBackgroundResource(R.drawable.wrongquestion);
+                        } else {
+                            pts++;
+                            option.setBackgroundResource(R.drawable.correctquestion);
+                            mUserPtsReference.setValue(pts);
 
-            clicked = true;
+                        }
+                    }
+                } else
+                    System.out.println("Error occurred");
+
+                clicked = true;
+            }
+            else
+            {
+                correctans.setBackgroundResource(R.drawable.correctquestion);
+                clicked = true;
+            }
         }
     }
 
@@ -197,6 +212,7 @@ private void attachQuestionListener() {
                                 waitTimer.cancel();
                                 waitTimer = null;
                             }
+                            timeup=false;
                             displayNextQuestion(Integer.parseInt(currentQuesno));
                             reverseTimer(5, time);
                         }
@@ -228,7 +244,7 @@ private void attachQuestionListener() {
                // if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     tv.setText("Completed");
                     timeup = true;
-
+                    markcorrectanswer(op1);
                 }
 
         }.start();
