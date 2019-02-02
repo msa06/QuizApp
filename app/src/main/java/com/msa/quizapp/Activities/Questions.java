@@ -91,21 +91,25 @@ public class Questions extends AppCompatActivity {
                     currentQuesno = status.getCurques();
                     showQuestion = status.getShowques();
                     if (status.getLive().equals("1")) {
-                        v1.start();         
+                        v1.start();
                         if (status.getShowques().equals("1") ) {
                             fraginplace = true;
                             setfragement(questionView);
                         } else {
-                            onBackPressed();
+                            if(fraginplace) {
+                                fragman.popBackStack();
+                                fraginplace = false;
+                            }
                         }
                     }
                     else {
                         v1.pause();
                         fragman.popBackStack();
+                        fraginplace = false;
                     }
                     if (!status.getShowques().equals("1") ) {
-                        onBackPressed();
-                    }
+                       // onBackPressed();
+                }
                 }
 
                 @Override

@@ -137,6 +137,11 @@ public class QuestionView extends Fragment {
     }
 
     private void displayNextQuestion(int count) {
+        op1.setBackgroundResource(R.drawable.questionsholder);
+        op2.setBackgroundResource(R.drawable.questionsholder);
+        op3.setBackgroundResource(R.drawable.questionsholder);
+        op4.setBackgroundResource(R.drawable.questionsholder);
+        clicked=false;
         if(doneloading) {
             if(count>=5)
                 count=0;
